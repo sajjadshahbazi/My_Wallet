@@ -1,0 +1,16 @@
+# Secrets and local config: never expose to AI
+local.properties
+*.keystore
+*.jks
+*.pem
+*.p12
+.env
+.env.*
+secrets/
+google-services.json
+GoogleService-Info.plist
+
+# Wallet test material (never commit real values)
+**/mnemonic*
+**/*seed*
+**/*privatekey*
