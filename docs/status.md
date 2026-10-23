@@ -13,6 +13,9 @@
 - `shared` packages: `features`, `common`, `components`, `tools`, `navigation`, `theme`, `di`.
 - MVI base in `tools/mvi`: `Mvi<State, Intent, Effect> by mvi(State())` with `onIntent`.
 - Amounts: `TokenAmount(raw: BigInteger, decimals: Int)`; stored as TEXT; JSON as String.
+- Dispatchers: no `DispatcherProvider` class. Classes receive a plain `CoroutineDispatcher` via constructor, chosen with Koin
+  `named(DispatcherQualifier.IO / DEFAULT)`. Qualifier String constants live in `domain/common/dispatcher`.
+- Koin modules: `dataModule` in `data/di`; `domainModule` and `presentationModule` in `shared/di` (domain must not import Koin).
 - iOS verified manually on Mac; development on Windows.
 - Existing `material3` alpha from the project wizard is accepted; do not add new alpha/beta dependencies.
 

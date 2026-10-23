@@ -4,7 +4,7 @@ Core functionality MUST have tests. Prefer fakes over mocks (MockK is not multip
 
 ## What must be tested
 - Domain: every UseCase; money types (`docs/numbers.md` boundaries); address validation; fee/amount logic; tx state machine.
-- ViewModels: state transitions per intent, effects, error paths (Turbine + `runTest` + test dispatcher through the injected `DispatcherProvider`).
+- ViewModels: state transitions per intent, effects, error paths (Turbine + `runTest` + test dispatcher such as `StandardTestDispatcher` passed straight to the constructor).
 - Data: repositories with Ktor `MockEngine` or fake APIs; mappers; DTO parsing (including huge numbers).
 - [P2] Crypto glue: derivation and signing against official test vectors (BIP-39/32/44 and chain-specific vectors from
   Wallet Core docs/tests). Never use real funds' keys in tests.

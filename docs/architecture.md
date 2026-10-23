@@ -61,7 +61,9 @@ Areas: wallet, account, chain, token, transaction, send, swap, price, security, 
 - ViewModels call UseCases, not repositories (unless a use case would be a pure pass-through and it was agreed).
 - **Errors**: no exceptions across layer boundaries. Sealed `AppError` hierarchy + result type in `domain/common`.
   Always rethrow `CancellationException`.
-- **Coroutines**: inject `DispatcherProvider` (never hardcode `Dispatchers.*`), no `GlobalScope`, `viewModelScope`,
+- **Coroutines**: inject a plain `CoroutineDispatcher` through the constructor, selected with the Koin qualifier names in
+  `domain/common/dispatcher/DispatcherQualifier` (`IO`, `DEFAULT`). Take only the dispatcher a class needs. Never hardcode
+  `Dispatchers.*` outside `data/di`. `Main` is not injected (`viewModelScope` already runs on Main). No `GlobalScope`;
   structured concurrency only.
 
 ## MVI contract
@@ -95,10 +97,12 @@ object NavigationKeys {
   grouped in clearly named objects/files.
 
 ## Dependency injection (Koin)
-- Modules per layer: `domainModule` (use cases), `dataModule` (repos, clients, platform bridges),
-  `presentationModule` (ViewModels). Assembled in `shared/.../di`.
+- Modules per layer: `dataModule` lives in `data/di` (repos, clients, platform bridges, dispatchers; implementations are `internal`).
+  `domainModule` (use cases) and `presentationModule` (ViewModels) live in `shared/di`, because `domain` must not import Koin.
+  All modules are assembled in `shared/di` (`startAppKoin()`).
 - Constructor injection only. `get()/inject()` only in DI modules; `koinViewModel()` only in `XxxScreen`.
-- Inject dispatchers, clock, logger and platform services (secure storage, biometrics, clipboard) so they can be faked.
+- Inject dispatchers (`CoroutineDispatcher` + qualifier), clock, logger and platform services (secure storage, biometrics,
+  clipboard) so they can be faked. Qualifier constants are plain Strings in `domain` (no Koin import there).
 
 ## SOLID and patterns (use only when they solve a concrete problem here)
 - S: one reason to change per class. O: new chain/DEX = new implementation, not edits to `when` chains.
