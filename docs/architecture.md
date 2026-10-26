@@ -18,7 +18,7 @@ Dependency rules (hard):
 ## `shared` packages (under `org.sajad.shahabzi`, in `commonMain`)
 ```
 features/<feature>/   One package per feature (receive, send, swap, home, onboarding, ...)
-common/               Cross-feature constants: navigation route keys (Strings), shared static fields, argument names
+common/               Constants.kt: the ONE constants file of `shared` (NavigationKeys, AppConstants: route keys, argument names, shared static fields)
 components/<name>/    Reusable UI used by several features, one package per component/dialog
                       (components/datepicker, components/confirmdialog, components/amountinput, ...)
 tools/                Reusable helpers (tools/format for digit grouping, tools/mvi base, tools/clipboard, ...)
@@ -47,7 +47,8 @@ Rules:
 ## `domain` and `data` packages
 Organized by area first, then layer:
 ```
-domain/<area>/{model, repository, usecase}      domain/common/{error, result, money, dispatcher}
+domain/<area>/{model, repository, service, usecase}      domain/common/{error, result, money, dispatcher}
+(`service` = small role interfaces implemented in `data` that are not repositories, e.g. MnemonicGenerator, AddressDeriver)
 data/<area>/{repository, remote(api,dto), local, mapper}      data/security/   data/walletcore/
 ```
 Areas: wallet, account, chain, token, transaction, send, swap, price, security, settings.
@@ -80,7 +81,7 @@ exposing `uiState: StateFlow<S>`, `effects: Flow<E>`, `onIntent(intent)`, plus h
 ## Navigation keys (`common`)
 Every screen has exactly ONE route key: a String constant in `common`, and nowhere else.
 ```kotlin
-// common/NavigationKeys.kt
+// common/Constants.kt (together with AppConstants)
 object NavigationKeys {
     const val HOME = "home"
     const val RECEIVE = "receive"
@@ -96,13 +97,38 @@ object NavigationKeys {
 - Adding a screen = add its key to `common` first. Other cross-feature constants also go in `common`,
   grouped in clearly named objects/files.
 
+## Constants (one file per Gradle module)
+Every fixed value with a meaning (identifiers, keys, route names, coin ids, library names, limits, sizes, timeouts, URLs) is a
+`const val` in the module's single constants file, and everything else references it. Never define a constant next to its use and never
+repeat the literal in another place.
+
+| Module | File | Object(s) |
+|---|---|---|
+| `shared` | `shared/.../common/Constants.kt` | `NavigationKeys`, `AppConstants` |
+| `data` | `data/.../common/DataConstants.kt` | `DataConstants` |
+| `domain` | `domain/.../common/DomainConstants.kt` | `DomainConstants` |
+
+Why one file per module and not a single file in `shared/common`: `domain` and `data` cannot import `shared` (dependency direction),
+and `data` is the one that needs identifiers like the bridge coin ids. A value belongs to the lowest module that needs it; higher modules
+reference it (`shared` -> `data` -> `domain`).
+- Allowed as local literals: trivial values (0, 1, empty string, separators), and test inputs/expected values in tests.
+- UI text is not a constant: it goes in Compose resources.
+- Swift code references exported constants (e.g. `DataConstants.shared.COIN_ETHEREUM`) instead of repeating the string.
+
 ## Dependency injection (Koin)
-- Modules per layer: `dataModule` lives in `data/di` (repos, clients, platform bridges, dispatchers; implementations are `internal`).
-  `domainModule` (use cases) and `presentationModule` (ViewModels) live in `shared/di`, because `domain` must not import Koin.
-  All modules are assembled in `shared/di` (`startAppKoin()`).
+- `domain` must not import Koin. Therefore: `dataModule` lives in `data/di` (data may use Koin core);
+  `domainModule` (use cases) and `presentationModule` (ViewModels) live in `shared/di`.
+  `startAppKoin()` in `shared/di` assembles all modules.
+- Platform pieces are provided with `expect val platformDataModule: Module` (actual in `androidMain`/`iosMain`) which `dataModule` includes.
+  iOS implementations written in Swift are passed in at app start (`startKoinIos(...)` in `shared/iosMain`).
 - Constructor injection only. `get()/inject()` only in DI modules; `koinViewModel()` only in `XxxScreen`.
-- Inject dispatchers (`CoroutineDispatcher` + qualifier), clock, logger and platform services (secure storage, biometrics,
-  clipboard) so they can be faked. Qualifier constants are plain Strings in `domain` (no Koin import there).
+- Inject dispatchers (`DispatcherProvider`), clock, logger and platform services so they can be faked.
+
+## Native bridge pattern (platform libraries such as Wallet Core)
+- A thin public interface in `data/commonMain` (e.g. `WalletCoreBridge`) uses only primitive types (String, Boolean, Int).
+- Each platform implements it natively (Android: Kotlin/JNI in `androidMain`; iOS: Swift). Keep native code minimal.
+- All validation, error mapping and conversion to domain types (`AppResult`, `Mnemonic`) is written once in `commonMain`
+  (`Bridge*` classes) and unit-tested with a fake bridge. Native implementations are tested with the same public test vectors on both platforms.
 
 ## SOLID and patterns (use only when they solve a concrete problem here)
 - S: one reason to change per class. O: new chain/DEX = new implementation, not edits to `when` chains.
@@ -123,7 +149,7 @@ Wallet Core for derivation/addresses/signing only.
 ## Naming and style
 - `XxxUseCase`, `XxxRepository` (domain) / `XxxRepositoryImpl` (data), `XxxApi`, `XxxDto`, `XxxEntity` (DB),
   `XxxMapper` or `toDomain()/toUi()`, `XxxScreen`, `XxxViewModel`, `XxxState/Intent/Effect`, `XxxUiModel`.
-- Packages lowercase, no underscores. One top-level public type per file, file named after it.
+- Packages lowercase, no underscores. One top-level public type per file, file named after it (exception: a constants file may hold several constant objects).
 - Kotlin official style: `val`, immutability, sealed types over flags, named arguments for 3+ params.
 - Public `domain` API has KDoc (behavior and failure cases). No magic numbers/strings: named constants.
 
@@ -135,5 +161,6 @@ Wallet Core for derivation/addresses/signing only.
 - Route strings are declared only in `common` (no literal routes in `composable(...)` / `navigateTo(...)`)
 - No `toLong()/toInt()/toDouble()` on money types in `domain` and `shared`
 - `commonMain` has no `java.`/`android.` imports
+- `const val` is declared only in the module's constants file (tests excluded)
 - Naming suffixes (UseCase, Repository, ViewModel, State, Intent, Effect)
 - Every `XxxScreen` file has a matching preview; no `Double`/`Float` in `domain`

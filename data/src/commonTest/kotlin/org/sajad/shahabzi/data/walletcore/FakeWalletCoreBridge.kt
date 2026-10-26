@@ -6,7 +6,12 @@ internal class FakeWalletCoreBridge(
     var address: String? = ADDRESS,
 ) : WalletCoreBridge {
 
-    override fun generateMnemonic(wordCount: Int): String? = generatedMnemonic
+    var lastStrengthBits: Int? = null
+
+    override fun generateMnemonic(strengthBits: Int): String? {
+        lastStrengthBits = strengthBits
+        return generatedMnemonic
+    }
 
     override fun isValidMnemonic(mnemonic: String): Boolean = mnemonic in validMnemonics
 

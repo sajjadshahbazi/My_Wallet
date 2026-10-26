@@ -1,5 +1,6 @@
 package org.sajad.shahabzi.data.walletcore
 
+import org.sajad.shahabzi.data.common.DataConstants
 import org.sajad.shahabzi.domain.common.error.AppError
 import org.sajad.shahabzi.domain.common.result.AppResult
 import org.sajad.shahabzi.domain.wallet.model.Chain
@@ -25,5 +26,5 @@ internal class BridgeAddressDeriver(
 }
 
 private fun Chain.toBridgeCoin(): String = when (this) {
-    Chain.ETHEREUM -> "ETHEREUM"
+    Chain.ETHEREUM -> DataConstants.COIN_ETHEREUM
 }

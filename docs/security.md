@@ -11,6 +11,9 @@ Tags `[P1]`..`[P6]` = phase from which the rule is mandatory (`docs/phases.md`).
 - Keep secrets in `ByteArray`/`CharArray` where possible and wipe after use. Strings cannot be wiped: keep their lifetime minimal.
 - No secrets in `SavedStateHandle`, navigation args, deep links, Effects, analytics or crash reports.
 - No secrets, API keys or test mnemonics in source/resources. Use git-ignored config files; keep them in `.aiexclude`.
+  **Exception:** public, well-known BIP-39 test vectors (e.g. the "abandon ... about" phrase) may appear in tests only, with a comment
+  saying so. Never any generated or real phrase. If a test with a known vector fails, verify the expected value with an independent
+  offline tool; never edit the expected value just to make the test pass.
 - Never write your own cryptography. Use platform APIs and Wallet Core.
 
 ## Basics [P1]
@@ -18,6 +21,10 @@ Tags `[P1]`..`[P6]` = phase from which the rule is mandatory (`docs/phases.md`).
 - Android: `allowBackup=false` and data-extraction rules excluding everything; not debuggable in release.
 - Development uses testnets only. No real mnemonic anywhere in the repo.
 - Dependencies: pinned stable versions; minimize dependencies in `domain` and anything touching keys.
+- Wallet Core: official `trustwallet/wallet-core` only (no forks), exact pinned version in the version catalog, read the release notes
+  (breaking changes) before upgrading. The GitHub Packages token is a classic token with only `read:packages`, stored in the user-level
+  `~/.gradle/gradle.properties` (never in the project, never committed, never pasted into chats/AI). Prefer an expiring token and rotate it.
+  The Maven repository entry is restricted to group `com.trustwallet`.
 
 ## Key storage and lock [P2]
 - Android: Android Keystore, hardware-backed (StrongBox when available), key requires user authentication, invalidated on new

@@ -39,4 +39,22 @@ class BridgeMnemonicGeneratorTest {
 
         assertEquals(AppResult.Failure(AppError.MnemonicGenerationFailed), result)
     }
+
+    @Test
+    fun generate_with12Words_requests128BitsOfEntropy() {
+        val bridge = FakeWalletCoreBridge()
+
+        BridgeMnemonicGenerator(bridge).generate(MnemonicLength.WORDS_12)
+
+        assertEquals(128, bridge.lastStrengthBits)
+    }
+
+    @Test
+    fun generate_with24Words_requests256BitsOfEntropy() {
+        val bridge = FakeWalletCoreBridge()
+
+        BridgeMnemonicGenerator(bridge).generate(MnemonicLength.WORDS_24)
+
+        assertEquals(256, bridge.lastStrengthBits)
+    }
 }

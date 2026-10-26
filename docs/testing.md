@@ -9,6 +9,9 @@ Core functionality MUST have tests. Prefer fakes over mocks (MockK is not multip
 - [P2] Crypto glue: derivation and signing against official test vectors (BIP-39/32/44 and chain-specific vectors from
   Wallet Core docs/tests). Never use real funds' keys in tests.
 - [P2] Storage: encryption/decryption round trip, tampering detection, key-invalidated path, storage version migration.
+- Native-library code (Wallet Core JNI) cannot run in host tests. Keep logic in `commonMain` (tested with fake bridges) and
+  verify the native implementation with instrumented tests in `androidApp/src/androidTest` using public test vectors
+  (run on an emulator: `.\gradlew.bat :androidApp:connectedDebugAndroidTest`).
 - Compose: UI tests only for critical flows (send confirmation, unlock). Previews cover the rest.
 
 ## Conventions

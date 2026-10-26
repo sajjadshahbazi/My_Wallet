@@ -1,5 +1,7 @@
 package org.sajad.shahabzi.domain.wallet.model
 
+import org.sajad.shahabzi.domain.common.DomainConstants
+
 
 /**
  * A secret recovery phrase. The phrase is never part of [toString], so it cannot
@@ -8,5 +10,4 @@ package org.sajad.shahabzi.domain.wallet.model
 class Mnemonic(private val phrase: String) {
     fun reveal(): String = phrase
 
-    override fun toString(): String = "Mnemonic(***)"
-}
+    override fun toString(): String = "Mnemonic(${DomainConstants.REDACTED_PLACEHOLDER})"}

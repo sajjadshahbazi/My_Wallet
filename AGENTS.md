@@ -30,12 +30,17 @@ Correctness and security beat speed and cleverness. When in doubt, ASK. Do not i
 - Money/token amounts, fees, gas, prices: BigInteger/BigDecimal via our domain types. NEVER `Int`/`Long`/`Double`/`Float`,
   never `toLong()/toInt()/toDouble()`. Amounts can be up to uint256 (~78 digits) with 18+ decimals. See `docs/numbers.md`.
 - NEVER log, print, persist in plain text, or send anywhere: seed phrase, private keys, passphrases, signed payloads.
-- No secrets, API keys or test mnemonics in source. Never put secrets in nav args, state, effects or `toString()`.
+- No secrets, API keys or test mnemonics in source (only exception: public BIP-39 test vectors in tests, see `docs/security.md`).
+  Never put secrets in nav args, state, effects or `toString()`.
 - Never touch crypto, key storage or signing code unless the task explicitly says so. Never write your own crypto.
 - Dependency direction: `presentation -> domain <- data`. `domain` is pure Kotlin. See `docs/architecture.md`.
 - Every screen: `XxxScreen` (ViewModel + Koin) -> private `XxxContent(state, onIntent)` -> `@Preview`.
   Composables never call ViewModel functions directly; all actions go through `onIntent(...)`.
 - Features never import other features. Route strings live only in `common` (`NavigationKeys`).
+- Constants: every fixed value that has a meaning (identifiers, keys, route names, coin ids, library names, limits, sizes, timeouts,
+  URLs) is a `const val` in the module's ONE constants file and is referenced from there. Never define it locally and never repeat the
+  literal. Files: `shared/.../common/Constants.kt`, `data/.../common/DataConstants.kt`, `domain/.../common/DomainConstants.kt`.
+  See `docs/architecture.md` (Constants).
 - `commonMain` has no `java.*` / `android.*` imports (iOS must keep compiling).
 - No new dependency or version change without approval. Add versions only in `gradle/libs.versions.toml`, prefer stable releases.
 - Core logic has tests (use cases, money math, ViewModels, mappers). Prefer fakes over mocks.
