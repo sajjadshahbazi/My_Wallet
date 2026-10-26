@@ -66,6 +66,10 @@ kotlin {
     }
 }
 
+compose.resources {
+    packageOfResClass = "org.sajad.shahabzi.resources"
+}
+
 dependencies {
     androidRuntimeClasspath(libs.compose.uiTooling)
 }

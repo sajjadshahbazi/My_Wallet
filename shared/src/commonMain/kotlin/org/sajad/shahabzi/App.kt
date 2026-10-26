@@ -15,9 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import org.jetbrains.compose.resources.painterResource
-
-import mywallet.shared.generated.resources.Res
-import mywallet.shared.generated.resources.compose_multiplatform
+import org.sajad.shahabzi.resources.Res
+import org.sajad.shahabzi.resources.compose_multiplatform
 
 @Composable
 @Preview
