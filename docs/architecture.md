@@ -68,10 +68,13 @@ Areas: wallet, account, chain, token, transaction, send, swap, price, security, 
   structured concurrency only.
 
 ## MVI contract
-Base lives in `tools/mvi` (delegation style):
-`class XxxViewModel(...) : ViewModel(), Mvi<XxxState, XxxIntent, XxxEffect> by mvi(XxxState())`
-exposing `uiState: StateFlow<S>`, `effects: Flow<E>`, `onIntent(intent)`, plus helpers `currentUiState`,
-`updateUiState { copy(...) }`, `sendEffect(effect)`. Do not change this API without approval.
+Base lives in `tools/mvi` (delegation style). A ViewModel is:
+`class XxxViewModel(...) : ViewModel(), Mvi<XxxState, XxxEffect> by mvi(XxxState()), IntentHandler<XxxIntent>`
+- `Mvi<S, E>` (delegated) exposes `uiState: StateFlow<S>`, `effects: Flow<E>`, `currentUiState`, `updateUiState { copy(...) }`, `sendEffect(effect)`.
+  Use `Nothing` as `E` when a screen has no effects.
+- `IntentHandler<I>` declares `fun onIntent(intent: I)`; the ViewModel implements it. Compose receives `viewModel::onIntent`.
+- `ObserveEffects(viewModel.effects) { ... }` (in `tools/mvi`) is how a Screen handles one-time effects.
+Do not change this API without approval.
 - `XxxState`: immutable `data class` with defaults; lists are `ImmutableList`; never holds secrets longer than needed.
 - `XxxIntent`: `sealed interface` (objects for no-arg, data classes for intents with data).
 - `XxxEffect`: `sealed interface` for ONE-TIME UI events (snackbar, copy, haptic). Navigation goes through `AppNavigator`.
@@ -113,6 +116,7 @@ and `data` is the one that needs identifiers like the bridge coin ids. A value b
 reference it (`shared` -> `data` -> `domain`).
 - Allowed as local literals: trivial values (0, 1, empty string, separators), and test inputs/expected values in tests.
 - UI text is not a constant: it goes in Compose resources.
+- Design tokens (colors, dimensions, typography) live in `theme/` (color schemes, `AppDimens`), not in `Constants.kt`.
 - Swift code references exported constants (e.g. `DataConstants.shared.COIN_ETHEREUM`) instead of repeating the string.
 
 ## Dependency injection (Koin)

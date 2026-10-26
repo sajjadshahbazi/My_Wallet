@@ -16,6 +16,9 @@
   not run yet (androidx.test artifacts could not be downloaded on the dev machine). Not committed until it runs.
 - W1 iOS (Swift bridge, SPM, `startKoinIos`, XCTest): written by the developer, review in progress; not verified yet. See `docs/ios-verification.md`.
 
+## Target networks (final)
+Ethereum (ERC-20), BNB Smart Chain (BEP-20), TRON (TRC-20), Bitcoin, Solana, TON. See `docs/phases.md` and `docs/chains.md`.
+
 ## Decisions (do not revisit without asking)
 - DI: Koin (Hilt is Android-only). Koin modules: `dataModule` in `data/di` (uses `expect val platformDataModule`),
   `domainModule` and `presentationModule` will live in `shared/di` (domain must not import Koin). `startAppKoin()` in `shared/di`.
@@ -23,7 +26,9 @@
 - Navigation: String route keys in `common/NavigationKeys`; nav library: JetBrains Navigation Compose.
 - Modules: `domain` and `data` are separate Gradle modules next to `androidApp`/`iosApp`; `shared` = presentation + DI root.
 - `shared` packages: `features`, `common`, `components`, `tools`, `navigation`, `theme`, `di`.
-- MVI base in `tools/mvi`: `Mvi<State, Intent, Effect> by mvi(State())` with `onIntent` (not written yet).
+- MVI base in `tools/mvi`: `Mvi<State, Effect> by mvi(State())` + `IntentHandler<Intent>` (`onIntent`); `Nothing` as Effect when none; `ObserveEffects` composable.
+- Design tokens live in `theme/` (color schemes, `AppDimens`); UI text in Compose resources (`org.sajad.shahabzi.resources.Res`).
+- `AppNavigator` interface in `shared/navigation` (implementation with Navigation Compose comes in the next step).
 - Amounts: `TokenAmount(raw: BigInteger, decimals: Int)`; stored as TEXT; JSON as String (not written yet).
 - Wallet Core: native only (Android AAR from GitHub Packages, iOS SPM local `Package.swift` from the official release),
   never the KMP beta. Pinned 4.8.4. Official repo `trustwallet/wallet-core` only (no forks).
@@ -48,6 +53,8 @@
 - (none)
 
 ## Next
+- P1-4 (in progress): MVI base, `Constants.kt`, theme, `AppNavigator` interface, `features/welcome` + tests.
+- P1-5: Navigation Compose, `App` wiring, DI `presentationModule`, Create-wallet screens (UI only).
 - Run `WalletCoreAndroidTest` on the emulator once dependencies download; then commit it.
 - P1: money types (`TokenAmount`, BigInteger library), MVI base, `common/NavigationKeys`, theme, quality tooling
   (detekt/ktlint/Konsist), reference feature `receive`.
