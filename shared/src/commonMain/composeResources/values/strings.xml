@@ -5,4 +5,11 @@
     <string name="welcome_terms_agreement">I agree to the Terms of Service and Privacy Policy</string>
     <string name="welcome_create_wallet">Create new wallet</string>
     <string name="welcome_import_wallet">I already have a wallet</string>
+    <string name="create_wallet_title">Your recovery phrase</string>
+    <string name="create_wallet_warning">Write these 12 words down in order and keep them offline. Anyone who has them can take your funds. We can’t recover them for you.</string>
+    <string name="create_wallet_masked_word">••••••</string>
+    <string name="create_wallet_reveal">Tap to reveal</string>
+    <string name="create_wallet_hide">Hide</string>
+    <string name="create_wallet_error">Couldn’t generate a recovery phrase.</string>
+    <string name="create_wallet_retry">Try again</string>
 </resources>

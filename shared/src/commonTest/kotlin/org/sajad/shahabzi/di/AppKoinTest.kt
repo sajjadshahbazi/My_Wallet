@@ -6,6 +6,8 @@ import kotlin.test.assertNotNull
 import org.koin.core.context.stopKoin
 import org.koin.mp.KoinPlatform
 import org.sajad.shahabzi.domain.common.DispatcherProvider
+import org.sajad.shahabzi.navigation.AppNavigator
+
 
 class AppKoinTest {
 
@@ -21,5 +23,14 @@ class AppKoinTest {
         val provider = KoinPlatform.getKoin().get<DispatcherProvider>()
 
         assertNotNull(provider)
+    }
+
+    @Test
+    fun startAppKoin_resolvesAppNavigator() {
+        startAppKoin()
+
+        val navigator = KoinPlatform.getKoin().get<AppNavigator>()
+
+        assertNotNull(navigator)
     }
 }

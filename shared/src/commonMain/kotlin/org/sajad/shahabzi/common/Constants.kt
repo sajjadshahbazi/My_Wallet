@@ -6,3 +6,7 @@ object NavigationKeys {
     const val CREATE_WALLET = "create_wallet"
     const val IMPORT_WALLET = "import_wallet"
 }
+
+object AppConstants {
+    const val PHRASE_GRID_COLUMNS = 3
+}

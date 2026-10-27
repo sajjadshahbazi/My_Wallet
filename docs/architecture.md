@@ -97,6 +97,7 @@ object NavigationKeys {
 - Screens with arguments: key + a small route-builder function + argument-name constants next to it in `common`.
 - Arguments carry only small non-sensitive identifiers (token ID, chain ID, tx ID). Never secrets; amounts never as numbers
   (raw String smallest-unit, or keep them in a shared domain/session holder).
+- `AppNavigator` is implemented by `ChannelAppNavigator` (navigation package): it emits commands that `AppNavHost` collects and applies to the NavController (no NavController inside ViewModels or singletons).
 - Adding a screen = add its key to `common` first. Other cross-feature constants also go in `common`,
   grouped in clearly named objects/files.
 
@@ -114,7 +115,7 @@ repeat the literal in another place.
 Why one file per module and not a single file in `shared/common`: `domain` and `data` cannot import `shared` (dependency direction),
 and `data` is the one that needs identifiers like the bridge coin ids. A value belongs to the lowest module that needs it; higher modules
 reference it (`shared` -> `data` -> `domain`).
-- Allowed as local literals: trivial values (0, 1, empty string, separators), and test inputs/expected values in tests.
+- Allowed as local literals: trivial values (0, 1, empty string, separators), test inputs/expected values in tests, and sample data inside `@Preview` functions (never a valid or real mnemonic).
 - UI text is not a constant: it goes in Compose resources.
 - Design tokens (colors, dimensions, typography) live in `theme/` (color schemes, `AppDimens`), not in `Constants.kt`.
 - Swift code references exported constants (e.g. `DataConstants.shared.COIN_ETHEREUM`) instead of repeating the string.

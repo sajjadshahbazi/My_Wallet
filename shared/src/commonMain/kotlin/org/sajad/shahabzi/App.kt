@@ -18,31 +18,44 @@ import org.jetbrains.compose.resources.painterResource
 import org.sajad.shahabzi.resources.Res
 import org.sajad.shahabzi.resources.compose_multiplatform
 
+import androidx.compose.runtime.Composable
+import org.sajad.shahabzi.navigation.AppNavHost
+import org.sajad.shahabzi.theme.AppTheme
+
 @Composable
 @Preview
 fun App() {
-    MaterialTheme {
-        var showContent by remember { mutableStateOf(false) }
-        Column(
-            modifier = Modifier
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .safeContentPadding()
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Button(onClick = { showContent = !showContent }) {
-                Text("Click me!")
-            }
-            AnimatedVisibility(showContent) {
-                val greeting = remember { Greeting().greet() }
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-                    Text("Compose: $greeting")
-                }
-            }
-        }
+    AppTheme {
+        AppNavHost()
     }
 }
+
+
+//@Composable
+//@Preview
+//fun App() {
+//    MaterialTheme {
+//        var showContent by remember { mutableStateOf(false) }
+//        Column(
+//            modifier = Modifier
+//                .background(MaterialTheme.colorScheme.primaryContainer)
+//                .safeContentPadding()
+//                .fillMaxSize(),
+//            horizontalAlignment = Alignment.CenterHorizontally,
+//        ) {
+//            Button(onClick = { showContent = !showContent }) {
+//                Text("Click me!")
+//            }
+//            AnimatedVisibility(showContent) {
+//                val greeting = remember { Greeting().greet() }
+//                Column(
+//                    modifier = Modifier.fillMaxWidth(),
+//                    horizontalAlignment = Alignment.CenterHorizontally,
+//                ) {
+//                    Image(painterResource(Res.drawable.compose_multiplatform), null)
+//                    Text("Compose: $greeting")
+//                }
+//            }
+//        }
+//    }
+//}

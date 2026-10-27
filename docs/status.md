@@ -1,6 +1,6 @@
 # Project status (update at the end of every task)
 
-**Current phase:** P1 Foundation (with P2-A "Wallet Core bridge, Android" done early; see Done)
+**Current phase:** P1 Foundation (P2-A "Wallet Core bridge, Android" done early; see Done)
 
 ## Done
 - Project skeleton created (modules: `androidApp`, `shared`, `iosApp`). Runs on Android.
@@ -10,6 +10,9 @@
 - W1 (Android): Trust Wallet Core 4.8.4 added via GitHub Packages; `WalletCoreBridge` (thin native bridge),
   `BridgeMnemonicGenerator`, `BridgeAddressDeriver`, `AndroidWalletCoreBridge`; domain types `Mnemonic` (redacted `toString`),
   `MnemonicLength`, `Chain`, `AppResult`, `AppError`; host tests pass; `:androidApp:assembleDebug` passes.
+
+- P1-4: MVI base (`tools/mvi`), `common/Constants.kt` (NavigationKeys), theme (`AppTheme`, `AppDimens`, color schemes), `AppNavigator`
+  interface, `features/welcome` (+ tests). Host tests pass.
 
 ## Pending verification
 - `androidApp/src/androidTest/.../WalletCoreAndroidTest.kt` (real Wallet Core on emulator, known BIP-39 test vector):
@@ -28,7 +31,7 @@ Ethereum (ERC-20), BNB Smart Chain (BEP-20), TRON (TRC-20), Bitcoin, Solana, TON
 - `shared` packages: `features`, `common`, `components`, `tools`, `navigation`, `theme`, `di`.
 - MVI base in `tools/mvi`: `Mvi<State, Effect> by mvi(State())` + `IntentHandler<Intent>` (`onIntent`); `Nothing` as Effect when none; `ObserveEffects` composable.
 - Design tokens live in `theme/` (color schemes, `AppDimens`); UI text in Compose resources (`org.sajad.shahabzi.resources.Res`).
-- `AppNavigator` interface in `shared/navigation` (implementation with Navigation Compose comes in the next step).
+- Navigation: `AppNavigator` interface; implementation `ChannelAppNavigator` emits `NavigationCommand`s that `AppNavHost` (Navigation Compose, JetBrains `navigation-compose` 2.9.2, unverified pairing with CMP 1.12.1) applies to the NavController. Routes only from `NavigationKeys`.
 - Amounts: `TokenAmount(raw: BigInteger, decimals: Int)`; stored as TEXT; JSON as String (not written yet).
 - Wallet Core: native only (Android AAR from GitHub Packages, iOS SPM local `Package.swift` from the official release),
   never the KMP beta. Pinned 4.8.4. Official repo `trustwallet/wallet-core` only (no forks).
@@ -49,12 +52,18 @@ Ethereum (ERC-20), BNB Smart Chain (BEP-20), TRON (TRC-20), Bitcoin, Solana, TON
 - Wallet Core JNI works on the emulator ABI (pending androidTest).
 - Exact `Mvi`/`mvi()` base API shape.
 
+## Known gaps (must be closed before any release)
+- iOS `SecureScreen` is NOT implemented (actual only renders content). Must hide content in the app switcher and react to screen capture. Release blocker.
+- The recovery phrase screen (P1-5) shows a freshly generated phrase that is NOT persisted: if the process dies, a different phrase is generated.
+  Persistence + backup verification come with secure storage (P2). Never put real funds on a wallet created before then.
+- Import wallet flow does not exist yet; the Import button was removed from Welcome and returns with the import feature (P2).
+
 ## Open questions
 - (none)
 
 ## Next
-- P1-4 (in progress): MVI base, `Constants.kt`, theme, `AppNavigator` interface, `features/welcome` + tests.
-- P1-5: Navigation Compose, `App` wiring, DI `presentationModule`, Create-wallet screens (UI only).
+- P1-5 (in progress): Navigation Compose, DI modules (`domainModule`, `presentationModule`), `App` wiring, `GenerateMnemonicUseCase`, `SecureScreen` (Android), `features/createwallet` (recovery phrase screen).
+- P2-1: secure storage (Android Keystore) + persistence, backup verification, then lock/biometrics.
 - Run `WalletCoreAndroidTest` on the emulator once dependencies download; then commit it.
 - P1: money types (`TokenAmount`, BigInteger library), MVI base, `common/NavigationKeys`, theme, quality tooling
   (detekt/ktlint/Konsist), reference feature `receive`.

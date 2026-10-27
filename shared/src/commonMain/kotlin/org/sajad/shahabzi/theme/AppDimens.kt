@@ -10,4 +10,12 @@ object AppDimens {
     val MinTouchTarget = 48.dp
     val LogoSize = 64.dp
     val LogoCorner = 18.dp
+    val CardCorner = 12.dp
+    val CardPadding = 14.dp
+    val ChipCorner = 10.dp
+    val ChipHeight = 40.dp
+    val ChipSpacing = 8.dp
+    val ChipPadding = 10.dp
+    val ChipNumberWidth = 20.dp
+    val BorderWidth = 1.dp
 }

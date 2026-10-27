@@ -23,6 +23,7 @@ kotlin {
     sourceSets {
         androidMain.dependencies {
             implementation(libs.trustWalletCore)
+            implementation(libs.koin.android)
         }
         commonMain.dependencies {
             implementation(project(":domain"))
