@@ -22,3 +22,9 @@ Format: `- [ ] <date> <module/file>: what to build/run and the expected behavior
 - [ ] P1-5: `shared/iosMain/.../tools/secure/SecureScreen.ios.kt` compiles; REAL iOS implementation still missing (release blocker, see status.md).
 - [ ] P1-5: Navigation Compose (`AppNavHost`) works on iOS: Welcome -> Create wallet -> back (swipe back gesture).
 - [ ] P1-5: Create wallet screen shows a generated 12-word phrase through the Swift bridge; Reveal toggles words.
+- [ ] P2-1: `SwiftSecureStorageBridge.swift` (Keychain) conforms to `SecureStorageBridge`; `startKoinIos` now takes both bridges; XCTest put/get/contains/remove round trip passes.
+- [ ] P2-1: Keychain item attributes: generic password, service from `DataConstants.IOS_KEYCHAIN_SERVICE`, `WhenUnlockedThisDeviceOnly`, not synchronizable.
+- [ ] S1: iOS has no `SecretStore`/`KeyValueStore` implementation yet: `WalletRepository` cannot be resolved on iOS until S4 (Keychain + NSUserDefaults/Swift bridge).
+- [ ] S2: `SecureScreen` wraps the whole create-wallet wizard (phrase, verify, done): the iOS actual is still a no-op (release blocker).
+- [ ] S2: keyboard options for the verify fields (`autoCorrectEnabled = false`, password keyboard type) behave on iOS.
+- [ ] S2: Startup -> Welcome/Home routing, `popUpTo` behavior and back gesture on iOS.

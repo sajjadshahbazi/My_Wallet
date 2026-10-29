@@ -37,3 +37,12 @@
 ## Tests
 - Create -> verify backup -> lock -> unlock -> sign flow; import with valid/invalid mnemonic; key-invalidated path; migration from
   an old storage version; delete leaves no residue.
+
+## Storage layout v1 (written by `WalletRepositoryImpl`)
+- Wallet id = the wallet's Ethereum address in lowercase (public, deterministic: importing the same phrase twice is detected as a duplicate).
+- Secret (encrypted by the platform `SecretStore`): key `wallet_mnemonic.<id>` = recovery phrase.
+- Non-secret metadata (`KeyValueStore`): `wallet_ids` = ids joined by `,`; `wallet_address.<id>.<chainId>` = address; `storage_version` = 1.
+- Write order: secret first, then metadata; if metadata fails the secret is removed (rollback). Never metadata without secret.
+- Changing any key name or format requires a new `storage_version` and a migration with tests (fixtures of the old layout).
+- Android secret encryption: AES-256-GCM key in the Android Keystore (StrongBox when available), IV + ciphertext in a private preferences file.
+  Gap: the key is not yet bound to user authentication (comes with the app-lock stage).

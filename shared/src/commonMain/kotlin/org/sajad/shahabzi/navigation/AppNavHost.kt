@@ -8,6 +8,8 @@ import androidx.navigation.compose.rememberNavController
 import org.koin.compose.koinInject
 import org.sajad.shahabzi.common.NavigationKeys
 import org.sajad.shahabzi.features.createwallet.CreateWalletScreen
+import org.sajad.shahabzi.features.home.HomeScreen
+import org.sajad.shahabzi.features.startup.StartupScreen
 import org.sajad.shahabzi.features.welcome.WelcomeScreen
 import org.sajad.shahabzi.tools.mvi.ObserveEffects
 
@@ -18,17 +20,21 @@ fun AppNavHost(modifier: Modifier = Modifier) {
 
     ObserveEffects(navigator.commands) { command ->
         when (command) {
-            is NavigationCommand.To -> navController.navigate(command.route)
+            is NavigationCommand.To -> navController.navigate(command.route) {
+                command.popUpTo?.let { popUpTo(it) { inclusive = true } }
+            }
             NavigationCommand.Back -> navController.popBackStack()
         }
     }
 
     NavHost(
         navController = navController,
-        startDestination = NavigationKeys.WELCOME,
+        startDestination = NavigationKeys.STARTUP,
         modifier = modifier,
     ) {
+        composable(NavigationKeys.STARTUP) { StartupScreen() }
         composable(NavigationKeys.WELCOME) { WelcomeScreen() }
         composable(NavigationKeys.CREATE_WALLET) { CreateWalletScreen() }
+        composable(NavigationKeys.HOME) { HomeScreen() }
     }
 }

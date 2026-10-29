@@ -81,6 +81,12 @@ Do not change this API without approval.
 - One exhaustive `when (intent)` in `onIntent`; each branch delegates to a small private function.
 - ViewModels never reference Compose, Android or iOS types.
 
+## Feature state and errors
+Every feature owns its own state and its own UI error type: `CreateWalletState` + `CreateWalletError`, `RecoverWalletState` + `RecoverWalletError`, ...
+The ViewModel maps domain `AppError` to the feature's error type; screens never see `AppError`. "Create wallet" and "Recover wallet" are two
+separate features (packages `features/createwallet`, `features/recoverwallet`), each with its own ViewModel, intents, state and errors.
+A feature that is a multi-step flow keeps the steps inside its one state (a `step` field) so the secret never travels between ViewModels.
+
 ## Navigation keys (`common`)
 Every screen has exactly ONE route key: a String constant in `common`, and nowhere else.
 ```kotlin

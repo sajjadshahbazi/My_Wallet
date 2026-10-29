@@ -12,4 +12,30 @@
     <string name="create_wallet_hide">Hide</string>
     <string name="create_wallet_error">Couldn’t generate a recovery phrase.</string>
     <string name="create_wallet_retry">Try again</string>
+
+    <string name="create_wallet_backup_confirmed">I’ve written it down and stored it safely</string>
+    <string name="create_wallet_continue">Continue</string>
+    <string name="create_wallet_verify_title">Confirm your backup</string>
+    <string name="create_wallet_verify_subtitle">Enter the words at these positions to prove you saved your phrase.</string>
+    <string name="create_wallet_word_label">Word #%1$d</string>
+    <string name="create_wallet_verify_button">Verify and create</string>
+    <string name="create_wallet_saving">Saving…</string>
+    <string name="create_wallet_back">Back to phrase</string>
+    <string name="create_wallet_error_verification">Those words don’t match. Check your written phrase and try again.</string>
+    <string name="create_wallet_error_save">Couldn’t save your wallet securely. Please try again.</string>
+    <string name="create_wallet_error_exists">This wallet already exists on this device.</string>
+    <string name="create_wallet_done_title">Wallet created</string>
+    <string name="create_wallet_done_subtitle">Your recovery phrase is verified and your wallet is saved on this device.</string>
+    <string name="create_wallet_done_address_label">Ethereum address</string>
+    <string name="create_wallet_done_button">Go to my wallet</string>
+
+    <string name="home_title">My wallet</string>
+    <string name="home_address_label">Ethereum address</string>
+    <string name="home_dev_warning">Development build: do not send real funds to this address.</string>
+    <string name="home_error_load">Couldn’t load your wallet.</string>
+    <string name="home_error_no_wallet">No wallet was found on this device.</string>
+    <string name="home_retry">Try again</string>
+
+    <string name="startup_error">Couldn’t open secure storage.</string>
+    <string name="startup_retry">Try again</string>
 </resources>

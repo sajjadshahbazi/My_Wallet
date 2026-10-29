@@ -78,3 +78,9 @@ Tags `[P1]`..`[P6]` = phase from which the rule is mandatory (`docs/phases.md`).
 - Release: R8/minify, signed release pipeline, remote kill switch for swaps/features, threat model, external audit, bug bounty,
   store compliance (Apple/Google policies, local regulations, fee disclosure).
 - Do not "temporarily" disable a security check to make something work. Ask instead.
+
+## Storage design notes (P2-1, implemented)
+- Every secret and wallet record goes through `SecureStorageBridge` (Android Keystore AES-GCM / iOS Keychain). Entry key is bound as AAD on Android so
+  ciphertexts cannot be swapped between entries.
+- Commit marker pattern: `wallet.exists` written last, removed first; unknown or unreadable marker = `StorageUnavailable` (recovery flow), never a silent reset.
+- Not yet: authentication-bound keys, auto-lock, iOS passcode/biometric access control (P2-4).

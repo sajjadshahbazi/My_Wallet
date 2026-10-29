@@ -5,6 +5,8 @@ object NavigationKeys {
     const val WELCOME = "welcome"
     const val CREATE_WALLET = "create_wallet"
     const val IMPORT_WALLET = "import_wallet"
+    const val STARTUP = "startup"
+    const val HOME = "home"
 }
 
 object AppConstants {

@@ -1,6 +1,6 @@
 # Project status (update at the end of every task)
 
-**Current phase:** P1 Foundation (P2-A "Wallet Core bridge, Android" done early; see Done)
+**Current phase:** P1 finishing, P2 (keys and wallet persistence) in progress
 
 ## Done
 - Project skeleton created (modules: `androidApp`, `shared`, `iosApp`). Runs on Android.
@@ -13,6 +13,16 @@
 
 - P1-4: MVI base (`tools/mvi`), `common/Constants.kt` (NavigationKeys), theme (`AppTheme`, `AppDimens`, color schemes), `AppNavigator`
   interface, `features/welcome` (+ tests). Host tests pass.
+
+- P1-5: navigation (`AppNavHost`, `ChannelAppNavigator`), DI modules, `SecureScreen` (Android), `features/createwallet` (shows a generated phrase, NOT saved).
+
+## Roadmap to a complete create + restore wallet (Android and iOS)
+- P2-1 (in progress): wallet persistence layer: domain (`Wallet`, `WalletRepository`, `CreateWalletUseCase`, `GetWalletUseCase`), `SecureStorageBridge`
+  (Android Keystore AES-GCM, iOS Keychain via Swift), `WalletRepositoryImpl`, tests with fakes. No UI.
+- P2-2: create flow complete: confirm checkbox, verify 3 random words, save wallet, Home screen showing the Ethereum address, start routing (wallet exists -> Home).
+- P2-3: restore flow: import 12/24-word phrase (validate, derive, save), Import button returns on Welcome.
+- P2-4: app lock (PIN + biometrics), keys bound to authentication, fresh auth to reveal the phrase, Keystore invalidation recovery.
+- P2-5: iOS parity pass on the Mac; extra chains one by one, each with independent test vectors.
 
 ## Pending verification
 - `androidApp/src/androidTest/.../WalletCoreAndroidTest.kt` (real Wallet Core on emulator, known BIP-39 test vector):
@@ -45,11 +55,19 @@ Ethereum (ERC-20), BNB Smart Chain (BEP-20), TRON (TRC-20), Bitcoin, Solana, TON
 - iOS verified manually on Mac; development on Windows.
 - Existing `material3` alpha from the project wizard is accepted; do not add new alpha/beta dependencies.
 
+- Wallet storage (P2-1): single wallet for now. Secret (mnemonic) and public data (addresses, backup flag) are stored through `SecureStorageBridge`
+  as separate keys; the key `wallet.exists` (holds the storage version) is written LAST and removed FIRST, so a half-written wallet reads as "no wallet".
+  Android: AES-256-GCM key in Android Keystore (StrongBox when available), ciphertext + IV in app-private SharedPreferences, entry key used as AAD.
+  iOS: Keychain generic password, `WhenUnlockedThisDeviceOnly`, not synchronized. Authentication binding comes with P2-4.
+- Restore = import by recovery phrase first (private-key import later). Welcome shows the Import button again in P2-3.
+
 ## Unverified assumptions (verify when first used, then move to Decisions)
 - KMP BigInteger/BigDecimal library choice (maintenance status, iOS support).
 - `Dispatchers.IO` in `commonMain` compiles on iOS targets (Android side compiles).
 - Swift/Kotlin names in the iOS bridge (`WalletCoreBridge` protocol, `IosKoinKt.startKoinIos`).
-- Wallet Core JNI works on the emulator ABI (pending androidTest).
+- Wallet Core JNI works on the emulator ABI (verified manually by running the create screen if it showed a phrase).
+- Android Keystore storage works on device/emulator (first real check in P2-2 end to end: create, kill app, reopen).
+- Swift names for `SecureStorageBridge` and `DataConstants` constants.
 - Exact `Mvi`/`mvi()` base API shape.
 
 ## Known gaps (must be closed before any release)
@@ -58,13 +76,15 @@ Ethereum (ERC-20), BNB Smart Chain (BEP-20), TRON (TRC-20), Bitcoin, Solana, TON
   Persistence + backup verification come with secure storage (P2). Never put real funds on a wallet created before then.
 - Import wallet flow does not exist yet; the Import button was removed from Welcome and returns with the import feature (P2).
 
+- Wizard state uses `List<Int>` marked `@Immutable` (kotlinx-collections-immutable not added yet); switch to `ImmutableList` when that library is added.
+- Typed verification words live only in composable-local state (never in ViewModel state, intents are redacted); they are lost on rotation by design.
+
 ## Open questions
 - (none)
 
-## Next
-- P1-5 (in progress): Navigation Compose, DI modules (`domainModule`, `presentationModule`), `App` wiring, `GenerateMnemonicUseCase`, `SecureScreen` (Android), `features/createwallet` (recovery phrase screen).
-- P2-1: secure storage (Android Keystore) + persistence, backup verification, then lock/biometrics.
-- Run `WalletCoreAndroidTest` on the emulator once dependencies download; then commit it.
-- P1: money types (`TokenAmount`, BigInteger library), MVI base, `common/NavigationKeys`, theme, quality tooling
-  (detekt/ktlint/Konsist), reference feature `receive`.
-- P2: secure storage, biometrics, app lock, onboarding (create/import/backup verification).
+## Next (P2 roadmap, Android first, iOS in one Mac batch)
+- S1 (done): wallet persistence: `Wallet`, `WalletRepository`, `CreateWalletUseCase`, `GetWalletsUseCase`, `SecretStore` (Android Keystore), `KeyValueStore`; explicit backup exclusion rules.
+- S2 (in progress): feature `createwallet` as a wizard (phrase -> verify 3 words -> done with address), `startup` routing (STARTUP -> WELCOME or HOME), minimal `home` showing the address, shared `LabeledCheckbox` component, `AppNavigator.navigateTo(route, popUpTo)`.
+- S3: feature `recoverwallet` (import by recovery phrase) with its own state and errors.
+- S4: iOS batch on the Mac: Keychain `SecretStore`, `KeyValueStore`, `SecureScreen`, Swift bridge parity tests, all of `docs/ios-verification.md`.
+- S5: app lock (biometric + PIN), Keystore key bound to user authentication (re-encrypt with a storage migration), auto-lock.

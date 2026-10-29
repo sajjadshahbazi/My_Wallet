@@ -9,6 +9,8 @@ object DataConstants {
     const val MNEMONIC_STRENGTH_BITS_12_WORDS = 128
     const val MNEMONIC_STRENGTH_BITS_24_WORDS = 256
 
+    const val BACKUP_CHALLENGE_WORD_COUNT = 3
+
     // Storage layout v1 (see docs/wallet-lifecycle.md). Changing these needs a migration.
     const val STORAGE_VERSION = 1
     const val KEY_STORAGE_VERSION = "storage_version"

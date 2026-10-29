@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
+import org.sajad.shahabzi.components.labeledcheckbox.LabeledCheckbox
 import org.sajad.shahabzi.resources.Res
 import org.sajad.shahabzi.resources.welcome_create_wallet
 import org.sajad.shahabzi.resources.welcome_import_wallet
@@ -69,9 +70,10 @@ private fun WelcomeContent(
         verticalArrangement = Arrangement.spacedBy(AppDimens.ItemSpacing),
     ) {
         WelcomeHeader(modifier = Modifier.weight(1f))
-        TermsAcceptanceRow(
-            accepted = state.isTermsAccepted,
-            onToggle = { onIntent(WelcomeIntent.TermsToggled(it)) },
+        LabeledCheckbox(
+            checked = state.isTermsAccepted,
+            onCheckedChange = { onIntent(WelcomeIntent.TermsToggled(it)) },
+            label = stringResource(Res.string.welcome_terms_agreement),
         )
         Button(
             onClick = { onIntent(WelcomeIntent.CreateWalletClicked) },
@@ -124,28 +126,28 @@ private fun WelcomeHeader(modifier: Modifier = Modifier) {
     }
 }
 
-@Composable
-private fun TermsAcceptanceRow(
-    accepted: Boolean,
-    onToggle: (Boolean) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .heightIn(min = AppDimens.MinTouchTarget)
-            .toggleable(value = accepted, role = Role.Checkbox, onValueChange = onToggle),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Checkbox(checked = accepted, onCheckedChange = null)
-        Spacer(Modifier.width(AppDimens.ItemSpacing))
-        Text(
-            text = stringResource(Res.string.welcome_terms_agreement),
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onBackground,
-        )
-    }
-}
+//@Composable
+//private fun TermsAcceptanceRow(
+//    accepted: Boolean,
+//    onToggle: (Boolean) -> Unit,
+//    modifier: Modifier = Modifier,
+//) {
+//    Row(
+//        modifier = modifier
+//            .fillMaxWidth()
+//            .heightIn(min = AppDimens.MinTouchTarget)
+//            .toggleable(value = accepted, role = Role.Checkbox, onValueChange = onToggle),
+//        verticalAlignment = Alignment.CenterVertically,
+//    ) {
+//        Checkbox(checked = accepted, onCheckedChange = null)
+//        Spacer(Modifier.width(AppDimens.ItemSpacing))
+//        Text(
+//            text = stringResource(Res.string.welcome_terms_agreement),
+//            style = MaterialTheme.typography.bodyMedium,
+//            color = MaterialTheme.colorScheme.onBackground,
+//        )
+//    }
+//}
 
 @Preview
 @Composable
