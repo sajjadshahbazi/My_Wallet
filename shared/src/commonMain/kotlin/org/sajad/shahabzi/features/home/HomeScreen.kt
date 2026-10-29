@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -12,6 +13,7 @@ import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,6 +25,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.sajad.shahabzi.resources.Res
+import org.sajad.shahabzi.resources.home_add_wallet
 import org.sajad.shahabzi.resources.home_address_label
 import org.sajad.shahabzi.resources.home_dev_warning
 import org.sajad.shahabzi.resources.home_error_load
@@ -80,6 +83,14 @@ private fun HomeContent(
             }
             else -> AddressCard(address = state.address.orEmpty())
         }
+
+        OutlinedButton(
+            onClick = { onIntent(HomeIntent.AddWalletClicked) },
+            modifier = Modifier.fillMaxWidth().height(AppDimens.ButtonHeight),
+        ) {
+            Text(stringResource(Res.string.home_add_wallet))
+        }
+
         Text(
             text = stringResource(Res.string.home_dev_warning),
             style = MaterialTheme.typography.bodySmall,

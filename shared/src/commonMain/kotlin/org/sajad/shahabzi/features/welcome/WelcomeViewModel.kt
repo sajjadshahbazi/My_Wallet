@@ -17,7 +17,7 @@ class WelcomeViewModel(
         when (intent) {
             is WelcomeIntent.TermsToggled -> updateUiState { copy(isTermsAccepted = intent.accepted) }
             WelcomeIntent.CreateWalletClicked -> navigateIfTermsAccepted(NavigationKeys.CREATE_WALLET)
-            WelcomeIntent.ImportWalletClicked -> navigateIfTermsAccepted(NavigationKeys.IMPORT_WALLET)
+            WelcomeIntent.RecoverWalletClicked -> navigateIfTermsAccepted(NavigationKeys.RECOVER_WALLET)
         }
     }
 

@@ -6,6 +6,7 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 import org.sajad.shahabzi.features.createwallet.CreateWalletViewModel
 import org.sajad.shahabzi.features.home.HomeViewModel
+import org.sajad.shahabzi.features.recoverwallet.RecoverWalletViewModel
 import org.sajad.shahabzi.features.startup.StartupViewModel
 import org.sajad.shahabzi.features.welcome.WelcomeViewModel
 import org.sajad.shahabzi.navigation.AppNavigator
@@ -17,4 +18,5 @@ val presentationModule = module {
     viewModelOf(::WelcomeViewModel)
     viewModelOf(::CreateWalletViewModel)
     viewModelOf(::HomeViewModel)
+    viewModelOf(::RecoverWalletViewModel)
 }

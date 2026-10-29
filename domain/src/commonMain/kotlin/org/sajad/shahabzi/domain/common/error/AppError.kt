@@ -6,4 +6,5 @@ sealed interface AppError {
     data object DerivationFailed : AppError
     data object WalletAlreadyExists : AppError
     data object StorageFailed : AppError
+    data object InvalidWordCount : AppError
 }

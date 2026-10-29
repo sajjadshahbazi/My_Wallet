@@ -7,4 +7,5 @@ object DomainConstants {
     const val REDACTED_PLACEHOLDER = "***"
     const val CHAIN_ID_ETHEREUM = "ethereum"
     const val BACKUP_CHALLENGE_WORD_COUNT = 3
+    const val MNEMONIC_WORD_SEPARATOR = " "
 }

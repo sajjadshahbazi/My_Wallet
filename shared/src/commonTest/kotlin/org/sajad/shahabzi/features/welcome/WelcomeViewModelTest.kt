@@ -28,7 +28,14 @@ class WelcomeViewModelTest {
     fun onIntent_createWalletClicked_withoutTerms_doesNotNavigate() {
         viewModel.onIntent(WelcomeIntent.CreateWalletClicked)
 
-        assertTrue(navigator.navigatedRoutes.isEmpty())
+        assertTrue(navigator.calls.isEmpty())
+    }
+
+    @Test
+    fun onIntent_recoverWalletClicked_withoutTerms_doesNotNavigate() {
+        viewModel.onIntent(WelcomeIntent.RecoverWalletClicked)
+
+        assertTrue(navigator.calls.isEmpty())
     }
 
     @Test
@@ -41,12 +48,12 @@ class WelcomeViewModelTest {
     }
 
     @Test
-    fun onIntent_importWalletClicked_withTerms_navigatesToImportWallet() {
+    fun onIntent_recoverWalletClicked_withTerms_navigatesToRecoverWallet() {
         viewModel.onIntent(WelcomeIntent.TermsToggled(true))
 
-        viewModel.onIntent(WelcomeIntent.ImportWalletClicked)
+        viewModel.onIntent(WelcomeIntent.RecoverWalletClicked)
 
-        assertEquals(listOf(NavigationKeys.IMPORT_WALLET), navigator.navigatedRoutes)
+        assertEquals(listOf(NavigationKeys.RECOVER_WALLET), navigator.navigatedRoutes)
     }
 
     @Test
@@ -56,6 +63,6 @@ class WelcomeViewModelTest {
 
         viewModel.onIntent(WelcomeIntent.CreateWalletClicked)
 
-        assertTrue(navigator.navigatedRoutes.isEmpty())
+        assertTrue(navigator.calls.isEmpty())
     }
 }

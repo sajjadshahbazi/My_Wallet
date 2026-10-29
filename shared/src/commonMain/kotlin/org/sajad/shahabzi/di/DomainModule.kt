@@ -7,6 +7,7 @@ import org.sajad.shahabzi.domain.wallet.usecase.CreateBackupChallengeUseCase
 import org.sajad.shahabzi.domain.wallet.usecase.CreateWalletUseCase
 import org.sajad.shahabzi.domain.wallet.usecase.GenerateMnemonicUseCase
 import org.sajad.shahabzi.domain.wallet.usecase.GetWalletsUseCase
+import org.sajad.shahabzi.domain.wallet.usecase.RecoverWalletUseCase
 import org.sajad.shahabzi.domain.wallet.usecase.VerifyBackupUseCase
 
 val domainModule = module {
@@ -17,4 +18,5 @@ val domainModule = module {
     factoryOf(::GetWalletsUseCase)
     factoryOf(::CreateBackupChallengeUseCase)
     factoryOf(::VerifyBackupUseCase)
+    factoryOf(::RecoverWalletUseCase)
 }

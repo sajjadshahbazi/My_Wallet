@@ -28,3 +28,14 @@ Format: `- [ ] <date> <module/file>: what to build/run and the expected behavior
 - [ ] S2: `SecureScreen` wraps the whole create-wallet wizard (phrase, verify, done): the iOS actual is still a no-op (release blocker).
 - [ ] S2: keyboard options for the verify fields (`autoCorrectEnabled = false`, password keyboard type) behave on iOS.
 - [ ] S2: Startup -> Welcome/Home routing, `popUpTo` behavior and back gesture on iOS.
+- [ ] S3: recover wallet screen (`SecureScreen`, multiline phrase input with password keyboard type) behaves on iOS; Welcome -> Recover -> Home with popUpTo.
+- [ ] S4 design: iOS Keychain `SecretStore` must update an existing item (SecItemUpdate) instead of failing on duplicates, and purge orphan items on first launch.
+- [ ] S3: Recover wallet screen (multi-line phrase field, SecureScreen) works on iOS; `clearBackStack` navigation (uses `currentBackStack`) works on iOS.
+- [ ] S4 (to do on the Mac): iOS `SecretStore` (Keychain) and `KeyValueStore` (UserDefaults) through Swift bridges, real `SecureScreen`, then run the full create + recover + restart flow.
+- [ ] S4: Kotlin: `SecretStoreBridge`, `KeyValueStoreBridge`, `BridgeSecretStore`, `BridgeKeyValueStore`, iOS `platformDataModule`, `startKoinIos(walletCoreBridge, secretStoreBridge, keyValueStoreBridge)` compile for iOS.
+- [ ] S4: Swift `KeychainStore` conforms to both protocols (check generated names: putSecret(key:secret:), secretExists(key:), getSecret(key:), removeSecret(key:), getValue(key:), putValue(key:value:), removeValue(key:)).
+- [ ] S4: Keychain XCTests pass (round trip, overwrite, secrets and values are separate).
+- [ ] S4: Create wallet on iOS: phrase -> verify -> Done -> Home, kill app, relaunch: Home shows the same address.
+- [ ] S4: Recover wallet on iOS with the phrase of a wallet created on Android: same Ethereum address as on Android.
+- [ ] S4: Delete the app, reinstall: starts on Welcome (fresh-install wipe works).
+- [ ] S4: `PrivacyShield`: app switcher shows a blur; starting screen recording shows a blur.

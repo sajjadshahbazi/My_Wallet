@@ -46,3 +46,17 @@
 - Changing any key name or format requires a new `storage_version` and a migration with tests (fixtures of the old layout).
 - Android secret encryption: AES-256-GCM key in the Android Keystore (StrongBox when available), IV + ciphertext in a private preferences file.
   Gap: the key is not yet bound to user authentication (comes with the app-lock stage).
+
+## Recovery (import) rules
+- Input is normalized (trim, lowercase, any whitespace -> single space) and must have 12, 15, 18, 21 or 24 words; then BIP-39 validity (wordlist + checksum) is checked by the platform library.
+- Typed phrases live only in composable-local state and a redacted `PhraseInput` intent payload; never in ViewModel state, logs or saved state.
+- Recovering a phrase whose wallet already exists fails with a dedicated error (no overwrite, no duplicate).
+- Not supported yet: BIP-39 passphrase.
+
+## iOS note
+- Keychain items survive app deletion. On first launch after install (no metadata present) purge orphan Keychain secrets, otherwise a reinstall can leave an old secret behind and a new wallet with the same id would collide.
+
+## iOS storage (same layout v1)
+- Secret items: Keychain service `org.sajad.shahabzi.mywallet.secrets`, account = key (`wallet_mnemonic.<id>`).
+- Metadata items: Keychain service `org.sajad.shahabzi.mywallet.values`, account = key (`wallet_ids`, `wallet_address.<id>.<chainId>`, `storage_version`).
+- Kotlin side: `BridgeSecretStore` / `BridgeKeyValueStore` (commonMain, unit-tested with fake bridges) wrap the Swift `KeychainStore`.

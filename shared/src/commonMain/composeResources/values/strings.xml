@@ -38,4 +38,18 @@
 
     <string name="startup_error">Couldn’t open secure storage.</string>
     <string name="startup_retry">Try again</string>
+
+    <string name="welcome_recover_wallet">I already have a wallet</string>
+
+    <string name="recover_wallet_title">Recover your wallet</string>
+    <string name="recover_wallet_subtitle">Enter your 12 or 24 word recovery phrase, separated by spaces.</string>
+    <string name="recover_wallet_label">Recovery phrase</string>
+    <string name="recover_wallet_button">Recover wallet</string>
+    <string name="recover_wallet_saving">Recovering…</string>
+    <string name="recover_wallet_back">Back</string>
+    <string name="recover_wallet_error_word_count">A recovery phrase has 12 or 24 words.</string>
+    <string name="recover_wallet_error_invalid_phrase">This recovery phrase isn’t valid. Check each word and their order.</string>
+    <string name="recover_wallet_error_exists">This wallet is already on this device.</string>
+    <string name="recover_wallet_error_save">Couldn’t save your wallet securely. Please try again.</string>
+    <string name="home_add_wallet">Add or recover a wallet</string>
 </resources>

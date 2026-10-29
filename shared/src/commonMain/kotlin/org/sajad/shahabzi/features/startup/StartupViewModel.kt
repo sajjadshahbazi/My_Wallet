@@ -34,7 +34,7 @@ class StartupViewModel(
             when (val result = getWallets()) {
                 is AppResult.Success -> {
                     val route = if (result.value.isEmpty()) NavigationKeys.WELCOME else NavigationKeys.HOME
-                    appNavigator.navigateTo(route, popUpTo = NavigationKeys.STARTUP)
+                    appNavigator.navigateTo(route, clearBackStack = true)
                 }
                 is AppResult.Failure -> updateUiState { copy(error = StartupError.StorageUnavailable) }
             }

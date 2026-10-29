@@ -42,7 +42,7 @@ class CreateWalletViewModel(
             is CreateWalletIntent.VerifyClicked -> verify(intent.answers)
             CreateWalletIntent.RetryClicked -> generate()
             CreateWalletIntent.DoneClicked ->
-                appNavigator.navigateTo(NavigationKeys.HOME, popUpTo = NavigationKeys.WELCOME)
+                appNavigator.navigateTo(NavigationKeys.HOME, clearBackStack  = true)
         }
     }
 

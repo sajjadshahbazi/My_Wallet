@@ -70,8 +70,15 @@ Ethereum (ERC-20), BNB Smart Chain (BEP-20), TRON (TRC-20), Bitcoin, Solana, TON
 - Swift names for `SecureStorageBridge` and `DataConstants` constants.
 - Exact `Mvi`/`mvi()` base API shape.
 
+## Product behavior decisions
+- With a stored wallet the app opens on Home (later: lock screen first), not on Welcome. Welcome/Create/Recover are reached from Home via "Add or recover a wallet".
+- Home shows the most recently added wallet (wallet switching comes later).
+- Development reset: `adb shell pm clear <applicationId>` wipes app data; the next launch starts on Welcome.
+- After a successful create/recover the whole back stack is cleared and Home is shown (Back exits the app).
+
 ## Known gaps (must be closed before any release)
-- iOS `SecureScreen` is NOT implemented (actual only renders content). Must hide content in the app switcher and react to screen capture. Release blocker.
+- iOS `SecureScreen` (Kotlin actual) stays a no-op by design: protection is the global Swift `PrivacyShield` (blur in the app switcher and while the screen is recorded or mirrored). iOS cannot block screenshots. Must be verified on a device before release.
+- iOS Keychain items use `WhenUnlockedThisDeviceOnly` for now; biometric/passcode access control comes with the app-lock stage (S5, needs a migration).
 - The recovery phrase screen (P1-5) shows a freshly generated phrase that is NOT persisted: if the process dies, a different phrase is generated.
   Persistence + backup verification come with secure storage (P2). Never put real funds on a wallet created before then.
 - Import wallet flow does not exist yet; the Import button was removed from Welcome and returns with the import feature (P2).
@@ -79,12 +86,16 @@ Ethereum (ERC-20), BNB Smart Chain (BEP-20), TRON (TRC-20), Bitcoin, Solana, TON
 - Wizard state uses `List<Int>` marked `@Immutable` (kotlinx-collections-immutable not added yet); switch to `ImmutableList` when that library is added.
 - Typed verification words live only in composable-local state (never in ViewModel state, intents are redacted); they are lost on rotation by design.
 
+- BIP-39 passphrase (25th word) is not supported yet: phrases created with a passphrase elsewhere recover a different wallet.
+- Only one wallet per device for now (Startup opens the first wallet). Multiple wallets and "remove wallet" (needs authentication) come later.
+- Development reset: Android `adb shell pm clear <applicationId>`; iOS: erase the simulator or delete the app AND purge Keychain items (Keychain survives app deletion).
+
 ## Open questions
 - (none)
 
 ## Next (P2 roadmap, Android first, iOS in one Mac batch)
 - S1 (done): wallet persistence: `Wallet`, `WalletRepository`, `CreateWalletUseCase`, `GetWalletsUseCase`, `SecretStore` (Android Keystore), `KeyValueStore`; explicit backup exclusion rules.
-- S2 (in progress): feature `createwallet` as a wizard (phrase -> verify 3 words -> done with address), `startup` routing (STARTUP -> WELCOME or HOME), minimal `home` showing the address, shared `LabeledCheckbox` component, `AppNavigator.navigateTo(route, popUpTo)`.
-- S3: feature `recoverwallet` (import by recovery phrase) with its own state and errors.
-- S4: iOS batch on the Mac: Keychain `SecretStore`, `KeyValueStore`, `SecureScreen`, Swift bridge parity tests, all of `docs/ios-verification.md`.
+- S2 (done, verified on Android emulator: create, verify, persist, open Home after restart): feature `createwallet` as a wizard (phrase -> verify 3 words -> done with address), `startup` routing (STARTUP -> WELCOME or HOME), minimal `home` showing the address, shared `LabeledCheckbox` component, `AppNavigator.navigateTo(route, popUpTo)`.
+- S3 (done on Android): feature `recoverwallet` (recover by recovery phrase: 12/15/18/21/24 words) with its own state and errors; `ParseMnemonicUseCase`, `RecoverWalletUseCase`; Welcome gets the recover button back.
+- S4 (in progress): iOS batch: `SecretStoreBridge` + `KeyValueStoreBridge` (Kotlin interfaces, Swift `KeychainStore`), `PrivacyShield` (Swift), `startKoinIos` with three bridges, then run create + recover + restart on the Mac and all of `docs/ios-verification.md`.
 - S5: app lock (biometric + PIN), Keystore key bound to user authentication (re-encrypt with a storage migration), auto-lock.

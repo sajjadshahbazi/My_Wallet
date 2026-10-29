@@ -37,7 +37,7 @@ class StartupViewModelTest {
         createViewModel()
 
         assertEquals(
-            listOf(FakeAppNavigator.NavigateCall(NavigationKeys.WELCOME, NavigationKeys.STARTUP)),
+            listOf(FakeAppNavigator.NavigateCall(NavigationKeys.WELCOME, clearBackStack = true)),
             navigator.calls,
         )
     }
@@ -49,7 +49,7 @@ class StartupViewModelTest {
         createViewModel()
 
         assertEquals(
-            listOf(FakeAppNavigator.NavigateCall(NavigationKeys.HOME, NavigationKeys.STARTUP)),
+            listOf(FakeAppNavigator.NavigateCall(NavigationKeys.HOME, clearBackStack = true)),
             navigator.calls,
         )
     }

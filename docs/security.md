@@ -84,3 +84,10 @@ Tags `[P1]`..`[P6]` = phase from which the rule is mandatory (`docs/phases.md`).
   ciphertexts cannot be swapped between entries.
 - Commit marker pattern: `wallet.exists` written last, removed first; unknown or unreadable marker = `StorageUnavailable` (recovery flow), never a silent reset.
 - Not yet: authentication-bound keys, auto-lock, iOS passcode/biometric access control (P2-4).
+
+## iOS specifics [P2]
+- Secrets AND wallet metadata are stored as Keychain generic-password items with `kSecAttrAccessibleWhenUnlockedThisDeviceOnly`, in separate services.
+  Both are device-only, so a restored backup can never contain a wallet id without its secret. Biometric/passcode access control is added with the app lock (needs a migration).
+- The iOS Keychain survives app uninstall. On the first launch after an install (UserDefaults flag missing) the app deletes its own Keychain items, so uninstalling really removes a wallet (same as Android).
+- iOS cannot block screenshots. The Swift `PrivacyShield` covers the window with a blur whenever the app is inactive (app switcher) or the screen is captured (recording/mirroring).
+- Swift bridges return false/nil on failure and never log values.

@@ -11,8 +11,8 @@ internal class ChannelAppNavigator : AppNavigator {
 
     val commands: Flow<NavigationCommand> = channel.receiveAsFlow()
 
-    override fun navigateTo(route: String, popUpTo: String?) {
-        channel.trySend(NavigationCommand.To(route, popUpTo))
+    override fun navigateTo(route: String, clearBackStack: Boolean) {
+        channel.trySend(NavigationCommand.To(route, clearBackStack))
     }
 
     override fun navigateBack() {
